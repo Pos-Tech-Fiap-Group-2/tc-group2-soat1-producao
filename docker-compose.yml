@@ -1,0 +1,45 @@
+version: '3'
+services:
+  api:
+    container_name: tech-challenge-api-producao
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile
+      args:
+        JAR_FILE: tc-challenge-group2-soat1-producao.jar
+    command: ["/wait-for-it.sh", "mongodb-tech-challenge:27017", "-t", "60", "--", "java", "-jar", "/app/api.jar"]
+    restart: unless-stopped
+    environment:
+      DB_HOST: "mongodb-tech-challenge-producao"
+      DB_PORT: "27017"
+      DB_DATABASE: "tech-challenge"
+      DB_USER: admin
+      DB_PASSWORD: admin
+    ports:
+      - "8080:8080"
+    networks:
+      - tech-challenge-network
+    depends_on:
+      - mongodb
+
+  mongodb:
+    container_name: mongodb-tech-challenge-producao
+    image: mongo:latest
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+    command: [ --auth ]
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+    networks:
+      - tech-challenge-network
+
+volumes:
+  mongodb-data:
+
+networks:
+  tech-challenge-network:
+    driver: bridge
