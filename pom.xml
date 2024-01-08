@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.tech-challenge</groupId>
-	<artifactId>tc-challenge-group2-soat1-pedidos</artifactId>
+	<artifactId>tc-challenge-group2-soat1-producao</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>tc-challenge-group2-soat1-pedidos</name>
+	<name>tc-challenge-group2-soat1-producao</name>
 	<description>Projeto Pós Software Architecture</description>
 	
 	<properties>

@@ -21,8 +21,8 @@ public class TemplateApiMapper {
         return mapper.map(input, Template.class);
     }
 
-    public Collection<TemplateModel> toCollectionModel(Collection<Template> pagamentos) {
-        return pagamentos.stream()
+    public Collection<TemplateModel> toCollectionModel(Collection<Template> producao) {
+        return producao.stream()
                 .map(c -> mapper.map(c, TemplateModel.class))
                 .collect(Collectors.toList());
     }
