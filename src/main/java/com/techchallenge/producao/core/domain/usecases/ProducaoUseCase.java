@@ -26,4 +26,11 @@ public class ProducaoUseCase {
 		return gateway.consultarFilaDePedidos();
 	}
 
+    public Pedido consultarStatusDePedidoEmProducao(String id) {
+		return gateway.consultarStatusDePedidoEmProducao(id);
+    }
+
+	public List<Pedido> consultarHistoricoDeProducaoDePedido(String id) {
+		return gateway.consultarHistoricoDeProducaoDePedido(id);
+	}
 }

@@ -1,9 +1,13 @@
 package com.techchallenge.producao.core.domain.entities;
 
+import java.util.Date;
+
 public class Pedido {
 
 	private String pedidoId;
 	private String status;
+
+	private Date dataCriacao;
 
 	public String getPedidoId() { return pedidoId; }
 
@@ -16,4 +20,7 @@ public class Pedido {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+
+	public Date getDataCriacao() { return dataCriacao; }
+	public void setDataCriacao(Date dataCriacao) { this.dataCriacao = dataCriacao; }
 }

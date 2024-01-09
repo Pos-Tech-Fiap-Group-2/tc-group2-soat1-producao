@@ -11,4 +11,8 @@ public interface ProducaoGateway {
 	void atualizarStatusDePedidoEmProducao(Pedido pedido);
 
 	List<Pedido> consultarFilaDePedidos();
+
+    Pedido consultarStatusDePedidoEmProducao(String id);
+
+	List<Pedido> consultarHistoricoDeProducaoDePedido(String id);
 }

@@ -26,4 +26,8 @@ public class ProducaoApiMapper {
                 .map(c -> mapper.map(c, PedidoModel.class))
                 .collect(Collectors.toList());
     }
+
+    public PedidoModel toModel(Pedido pedido) {
+        return mapper.map(pedido, PedidoModel.class);
+    }
 }
