@@ -1,11 +1,16 @@
 package com.techchallenge.producao.adapter.controllers;
 
+import com.techchallenge.producao.adapter.driver.model.PedidoModel;
+import com.techchallenge.producao.core.domain.entities.Pedido;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.techchallenge.producao.adapter.driver.model.input.TemplateInput;
-import com.techchallenge.producao.adapter.mapper.api.TemplateApiMapper;
+import com.techchallenge.producao.adapter.driver.model.input.PedidoInput;
+import com.techchallenge.producao.adapter.mapper.api.ProducaoApiMapper;
 import com.techchallenge.producao.core.domain.usecases.ProducaoUseCase;
+
+import java.util.Collection;
+import java.util.List;
 
 @Component
 public class ProducaoController {
@@ -13,9 +18,18 @@ public class ProducaoController {
     @Autowired
     private ProducaoUseCase useCase;
     @Autowired
-    private TemplateApiMapper mapper;
+    private ProducaoApiMapper mapper;
     
-	public void registrarMensagem(TemplateInput input) {
-		useCase.registrarMensagem(mapper.toDomainObject(input));
+	public void adicionarPedidoAFilaDeProducao(String id) {
+		useCase.adicionarPedidoAFilaDeProducao(id);
 	}
+
+    public void atualizarStatusDePedidoEmProducao(PedidoInput input) {
+        useCase.atualizarStatusDePedidoEmProducao(mapper.toDomainObject(input));
+    }
+
+    public Collection<PedidoModel> consultarFilaDePedidos() {
+        List<Pedido> pedidos = useCase.consultarFilaDePedidos();
+        return mapper.toCollectionModel(pedidos);
+    }
 }
