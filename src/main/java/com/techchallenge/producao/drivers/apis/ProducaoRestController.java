@@ -59,4 +59,26 @@ public class ProducaoRestController {
 	public Collection<PedidoModel> consultarFilaDePedidos() {
 		return controller.consultarFilaDePedidos();
 	}
+
+	@ApiOperation(value = "Consultar Status de Pedido em Produção")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Status do pedido consultado com sucesso"),
+			@ApiResponse(code = 404, message = "Pedido não encontrado")
+	})
+	@GetMapping(value = "/{id}/status")
+	@ResponseStatus(HttpStatus.OK)
+	public PedidoModel consultarStatusDePedidoEmProducao(@PathVariable String id) {
+		return controller.consultarStatusDePedidoEmProducao(id);
+	}
+
+	@ApiOperation(value = "Consultar Histórico de Produção de um Pedido")
+@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Histórico de produção do pedido consultado com sucesso"),
+			@ApiResponse(code = 404, message = "Pedido não encontrado")
+	})
+	@GetMapping(value = "/{id}/historico")
+	@ResponseStatus(HttpStatus.OK)
+	public Collection<PedidoModel> consultarHistoricoDeProducaoDePedido(@PathVariable String id) {
+		return controller.consultarHistoricoDeProducaoDePedido(id);
+	}
 }

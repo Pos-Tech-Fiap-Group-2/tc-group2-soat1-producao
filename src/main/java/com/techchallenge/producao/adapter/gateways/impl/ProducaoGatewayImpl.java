@@ -32,7 +32,14 @@ public class ProducaoGatewayImpl implements ProducaoGateway {
 
 	@Override
 	public void atualizarStatusDePedidoEmProducao(Pedido pedido) {
-		PedidoEntity entity = new PedidoEntity();
+
+		PedidoEntity entity = pedidosRepository.findByPedidoId(pedido.getPedidoId());
+
+		if (entity == null) {
+			throw new RuntimeException("Pedido não encontrado");
+		}
+
+		entity = new PedidoEntity();
 		entity.setPedidoId(pedido.getPedidoId());
 		entity.setStatus(pedido.getStatus());
 
@@ -41,7 +48,19 @@ public class ProducaoGatewayImpl implements ProducaoGateway {
 
 	@Override
 	public List<Pedido> consultarFilaDePedidos() {
-	  	List<PedidoEntity> entities = pedidosRepository.findAll();
-		return mapper.toCollectionModel(entities);
+		List<PedidoEntity> pedidos = pedidosRepository.findAllGroupByPedidoIdOrderByDataCriacao();
+		return mapper.toCollectionModel(pedidos);
+	}
+
+	@Override
+	public Pedido consultarStatusDePedidoEmProducao(String id) {
+		PedidoEntity entity = pedidosRepository.findByPedidoId(id);
+		return mapper.toModel(entity);
+	}
+
+	@Override
+	public List<Pedido> consultarHistoricoDeProducaoDePedido(String id) {
+		List<PedidoEntity> pedidos = pedidosRepository.findAllByPedidoIdOrderByDataCriacao(id);
+		return mapper.toCollectionModel(pedidos);
 	}
 }

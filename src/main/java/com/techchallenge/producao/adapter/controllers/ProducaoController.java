@@ -32,4 +32,14 @@ public class ProducaoController {
         List<Pedido> pedidos = useCase.consultarFilaDePedidos();
         return mapper.toCollectionModel(pedidos);
     }
+
+    public PedidoModel consultarStatusDePedidoEmProducao(String id) {
+        Pedido pedido = useCase.consultarStatusDePedidoEmProducao(id);
+        return mapper.toModel(pedido);
+    }
+
+    public Collection<PedidoModel> consultarHistoricoDeProducaoDePedido(String id) {
+        List<Pedido> pedidos = useCase.consultarHistoricoDeProducaoDePedido(id);
+        return mapper.toCollectionModel(pedidos);
+    }
 }

@@ -30,6 +30,6 @@ public class PedidoEntity {
 	}
 
 	public void setStatus(String status) { this.status = status; }
-
 	public Date getDataCriacao() { return dataCriacao; }
+	public void setDataCriacao(Date dataCriacao) { this.dataCriacao = dataCriacao; }
 }

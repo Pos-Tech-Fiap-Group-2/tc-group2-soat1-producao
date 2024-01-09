@@ -20,4 +20,8 @@ public class ProducaoBusinessMapper {
                 .map(c -> mapper.map(c, Pedido.class))
                 .collect(Collectors.toList());
     }
+
+    public Pedido toModel(PedidoEntity entity) {
+        return mapper.map(entity, Pedido.class);
+    }
 }

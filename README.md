@@ -66,3 +66,13 @@ curl -X PUT http://localhost:8080/api/producao/{id}/status -H "Content-Type: app
 ```sh
 curl -X GET http://localhost:8080/api/producao/fila
 ```
+
+##### Consultar Status de Pedido em Produção
+```sh
+curl -X GET http://localhost:8080/api/producao/{id}/status
+```
+
+##### Consultar Histórico de Produção de um Pedido
+```sh
+curl -X GET http://localhost:8080/api/producao/{id}/historico
+```
