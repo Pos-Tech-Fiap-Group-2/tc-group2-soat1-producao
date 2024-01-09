@@ -33,7 +33,7 @@ Navegue até o diretório raiz do projeto no terminal e execute o seguinte coman
 mvn clean install
 ```
 
-Isso irá baixar as dependências do projeto, compilar o código-fonte e criar o artefato no diretório target com o nome **tech-challenge-group2-soat1-producao.jar**.<br/>
+Isso irá baixar as dependências do projeto, compilar o código-fonte e criar o artefato no diretório target com o nome **tech-challenge-group2-soat1-pedido.jar**.<br/>
 Esse artefato será copiado para a imagem do container em momento de build durante a execução do docker-compose.
 
 **Executando o projeto:**<br/>
@@ -42,9 +42,27 @@ Após a conclusão da etapa anterior, você pode executar o projeto seguindo as 
 # Build da imagem do projeto
 Caso seja necessária a geração de uma nova imagem, executar o comando no diretório raíz do projeto:
 ```sh
-docker build --build-arg "JAR_FILE=tech-challenge-group2-soat1-producao.jar" -t <usuario>/<imagem_nome>:<tag> .
+docker build --build-arg "JAR_FILE=tech-challenge-group2-soat1-pedido.jar" -t <usuario>/<imagem_nome>:<tag> .
 ```
 
 **Importante!**
 - Esse comando é necessário ser executado apenas no primeiro provisionamento dos recursos.
 - Após a primeira inicialização, os volumes relacionados aos dados do MongoDB estarão persistidos.
+
+# Endpoints disponíveis por recurso
+Abaixo, segue a lista de endpoints disponíveis por recurso e exemplos de requisição.
+
+##### Adicionar Pedido à Fila de Produção
+```sh
+curl -X POST http://localhost:8080/api/producao/{id}/adicionar
+```
+
+##### Atualizar Status de Pedido em Produção
+```sh
+curl -X PUT http://localhost:8080/api/producao/{id}/status -H "Content-Type: application/json" -d '{"status": "Em Preparação"}'
+```
+
+##### Consultar a Fila de Pedidos
+```sh
+curl -X GET http://localhost:8080/api/producao/fila
+```

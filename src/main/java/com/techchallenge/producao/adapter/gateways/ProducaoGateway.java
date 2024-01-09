@@ -1,8 +1,14 @@
 package com.techchallenge.producao.adapter.gateways;
 
-import com.techchallenge.producao.core.domain.entities.Template;
+import com.techchallenge.producao.core.domain.entities.Pedido;
+
+import java.util.List;
 
 public interface ProducaoGateway {
 
-	void registrarMensagem(Template template);
+	void adicionarPedidoAFilaDeProducao(String id);
+
+	void atualizarStatusDePedidoEmProducao(Pedido pedido);
+
+	List<Pedido> consultarFilaDePedidos();
 }
