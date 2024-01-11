@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import java.io.IOException;
 import java.util.Collection;
 
 @Api(tags = "Produção")
@@ -45,7 +46,7 @@ public class ProducaoRestController {
 	public void atualizarStatusDePedidoEmProducao(
 			@PathVariable String id,
 			@RequestBody PedidoInput input
-	) {
+	) throws IOException {
 		input.setPedidoId(id);
 		controller.atualizarStatusDePedidoEmProducao(input);
 	}

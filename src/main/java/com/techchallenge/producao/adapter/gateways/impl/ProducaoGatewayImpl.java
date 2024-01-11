@@ -1,5 +1,6 @@
 package com.techchallenge.producao.adapter.gateways.impl;
 
+import com.techchallenge.producao.adapter.external.pedidos.PedidosAPI;
 import com.techchallenge.producao.adapter.mapper.business.ProducaoBusinessMapper;
 import com.techchallenge.producao.core.domain.entities.Pedido;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,16 +10,20 @@ import com.techchallenge.producao.adapter.gateways.ProducaoGateway;
 import com.techchallenge.producao.drivers.db.entities.PedidoEntity;
 import com.techchallenge.producao.drivers.db.repositories.ProducaoRepository;
 
+import java.io.IOException;
 import java.util.List;
 
 @Component
 public class ProducaoGatewayImpl implements ProducaoGateway {
-	
+
 	@Autowired
 	private ProducaoRepository pedidosRepository;
 
 	@Autowired
 	private ProducaoBusinessMapper mapper;
+
+	@Autowired
+	private PedidosAPI pedidosAPI;
 	
 	@Override
 	public void adicionarPedidoAFilaDeProducao(String id) {
@@ -31,7 +36,7 @@ public class ProducaoGatewayImpl implements ProducaoGateway {
 	}
 
 	@Override
-	public void atualizarStatusDePedidoEmProducao(Pedido pedido) {
+	public void atualizarStatusDePedidoEmProducao(Pedido pedido) throws IOException {
 
 		PedidoEntity entity = pedidosRepository.findByPedidoId(pedido.getPedidoId());
 
@@ -44,6 +49,8 @@ public class ProducaoGatewayImpl implements ProducaoGateway {
 		entity.setStatus(pedido.getStatus());
 
 		pedidosRepository.save(entity);
+
+		pedidosAPI.atualizarStatusDePedido(entity.getPedidoId(), entity.getStatus());
 	}
 
 	@Override
