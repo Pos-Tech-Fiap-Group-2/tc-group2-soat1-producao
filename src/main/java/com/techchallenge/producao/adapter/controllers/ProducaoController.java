@@ -9,7 +9,6 @@ import com.techchallenge.producao.adapter.driver.model.input.PedidoInput;
 import com.techchallenge.producao.adapter.mapper.api.ProducaoApiMapper;
 import com.techchallenge.producao.core.domain.usecases.ProducaoUseCase;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
@@ -25,7 +24,7 @@ public class ProducaoController {
 		useCase.adicionarPedidoAFilaDeProducao(id);
 	}
 
-    public void atualizarStatusDePedidoEmProducao(PedidoInput input) throws IOException {
+    public void atualizarStatusDePedidoEmProducao(PedidoInput input) {
         useCase.atualizarStatusDePedidoEmProducao(mapper.toDomainObject(input));
     }
 

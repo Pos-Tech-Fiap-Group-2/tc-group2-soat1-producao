@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import com.techchallenge.producao.adapter.gateways.ProducaoGateway;
 import com.techchallenge.producao.core.domain.entities.Pedido;
 
-import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -19,7 +18,7 @@ public class ProducaoUseCase {
 		gateway.adicionarPedidoAFilaDeProducao(id);
 	}
 
-	public void atualizarStatusDePedidoEmProducao(Pedido pedido) throws IOException {
+	public void atualizarStatusDePedidoEmProducao(Pedido pedido) {
 		gateway.atualizarStatusDePedidoEmProducao(pedido);
 	}
 
