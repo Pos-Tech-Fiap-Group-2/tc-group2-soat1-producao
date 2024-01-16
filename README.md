@@ -47,6 +47,10 @@ docker build --build-arg "JAR_FILE=tech-challenge-group2-soat1-pedido.jar" -t <u
 
 Após geração da imagem, alterar o arquivo **09-deployment.yaml** indicando o novo tagueamento da imagem.
 
+**Importante!**
+- Esse comando é necessário ser executado apenas no primeiro provisionamento dos recursos.
+- Após a primeira inicialização, os volumes relacionados aos dados do MongoDB estarão persistidos.
+
 # Recursos provisionados no k8s
 Lista de arquivos YAML com recursos do k8s:
 - **00-secrets.yaml:** Armazenamento das secrets de banco de dados e access_token para a API do MP;
@@ -62,8 +66,16 @@ Lista de arquivos YAML com recursos do k8s:
 - **10-autoscale.yaml:** HPA com parametrização de quantidade de réplicas e indicador para escalabilidade.
 
 **Importante!**
-- Esse comando é necessário ser executado apenas no primeiro provisionamento dos recursos.
-- Após a primeira inicialização, os volumes relacionados aos dados do MongoDB estarão persistidos.
+Os arquivos devem ser aplicados ao k8s na ordem que estão mapeados.
+
+Após provisionamento dos recursos, a aplicação estará disponível no endereço associado a NAT configurada no ambiente provido do k8s. O contexto da aplicação está definida como **/api**.
+
+Após o provisionamento dos recursos, será necessário realizar uma carga de dados iniciais na base, executando o seguinte comando:
+
+```sh
+kubectl exec -i tech-challenge-group2-db-deployment-<hash> -- mysql -u root -proot  < .docker/seeds/load-data.sql
+```
+**Observação:** Substituir *&lt;hash&gt;* pelo hash associado ao pod provisionado pelo deployment.
 
 # Endpoints disponíveis por recurso
 Abaixo, segue a lista de endpoints disponíveis por recurso e exemplos de requisição.
