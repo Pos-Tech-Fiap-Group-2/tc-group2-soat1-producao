@@ -28,11 +28,6 @@ spec:
                 secretKeyRef:
                   name: tech-challenge-group2-pedidos-secret
                   key: db_password
-            - name: DB_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: tech-challenge-group2-pedidos-secret
-                  key: db_root_password
           envFrom:
             - configMapRef:
                 name: tech-challenge-group2-pedidos-configmap

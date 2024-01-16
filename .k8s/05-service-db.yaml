@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tech-challenge-group2-pedidos-db-svc
+spec:
+  selector:
+    app: tech-challenge-group2-pedidos-db
+  ports:
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017
+  clusterIP: None
