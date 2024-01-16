@@ -45,6 +45,22 @@ Caso seja necessária a geração de uma nova imagem, executar o comando no dire
 docker build --build-arg "JAR_FILE=tech-challenge-group2-soat1-pedido.jar" -t <usuario>/<imagem_nome>:<tag> .
 ```
 
+Após geração da imagem, alterar o arquivo **09-deployment.yaml** indicando o novo tagueamento da imagem.
+
+# Recursos provisionados no k8s
+Lista de arquivos YAML com recursos do k8s:
+- **00-secrets.yaml:** Armazenamento das secrets de banco de dados e access_token para a API do MP;
+- **01-persistent-volume-db.yaml:** Mapeamento da PV para os arquivos de banco de dados;
+- **02-persistent-volume-claim.yaml:** Mapeamento da PVC com configuração de claims para volumes do banco de dados;
+- **03-configmap.yaml:** ConfigMap com chaves relacionadas a integração do microserviço;
+- **04-configmap-db.yaml:** ConfigMap com chaves relacionadas a integração do banco de dados;
+- **05-service-db.yaml:** Mapeamento das portas para acesso ao service de banco de dados;
+- **06-service-lb.yaml:** Mapeamento das portas para acesso ao service LoadBalancer do microserviço;
+- **07-service-np.yaml:** Mapeamento das portar para acesso ao service NodePort do microserviço;
+- **08-deployment-db.yaml:** Deployment para disponibilização do banco de dados;
+- **09-deployment.yaml:** Deployment para disponibilização do microserviço;
+- **10-autoscale.yaml:** HPA com parametrização de quantidade de réplicas e indicador para escalabilidade.
+
 **Importante!**
 - Esse comando é necessário ser executado apenas no primeiro provisionamento dos recursos.
 - Após a primeira inicialização, os volumes relacionados aos dados do MongoDB estarão persistidos.

@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tech-challenge-group2-pedidos-db-deployment
+spec:
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      name: tech-challenge-group2-pedidos-db
+      labels:
+        app: tech-challenge-group2-pedidos-db
+    spec:
+      containers:
+        - name: tech-challenge-group2-pedidos-db-container
+          image: mongo:latest
+          ports:
+              - containerPort: 27017
+          envFrom:
+            - configMapRef:
+                name:
+                  tech-challenge-group2-pedidos-db-configmap
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: tech-challenge-group2-pedidos-secret
+                  key: db_user
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: tech-challenge-group2-pedidos-secret
+                  key: db_password
+          volumeMounts:
+            - name: tech-challenge-group2-pedidos-db-volume
+              mountPath: /data/db
+      volumes:
+        - name: tech-challenge-group2-pedidos-db-volume
+          persistentVolumeClaim:
+            claimName: tech-challenge-group2-pedidos-db-pvc
+  selector:
+    matchLabels:
+      app: tech-challenge-group2-pedidos-db
