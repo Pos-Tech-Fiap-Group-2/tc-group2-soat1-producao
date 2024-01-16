@@ -1,6 +1,7 @@
 package com.techchallenge.producao.core.domain.entities;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class Pedido {
 
@@ -23,4 +24,22 @@ public class Pedido {
 
 	public Date getDataCriacao() { return dataCriacao; }
 	public void setDataCriacao(Date dataCriacao) { this.dataCriacao = dataCriacao; }
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(dataCriacao, pedidoId, status);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Pedido other = (Pedido) obj;
+		return Objects.equals(dataCriacao, other.dataCriacao) && Objects.equals(pedidoId, other.pedidoId)
+				&& Objects.equals(status, other.status);
+	}
 }

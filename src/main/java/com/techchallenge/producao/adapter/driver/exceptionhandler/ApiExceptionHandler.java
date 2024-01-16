@@ -135,10 +135,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	    ProblemType problemType = ProblemType.ERRO_DE_SISTEMA;
 	    
 	    String detail = ERRO_INESPERADO;
-
-	    // Implementar logger...
-	    ex.printStackTrace();
-	    
 	    Problem problem = createProblemBuilder(status, problemType, detail).build();
 
 	    return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
