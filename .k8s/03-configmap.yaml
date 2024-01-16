@@ -4,4 +4,5 @@ metadata:
   name: tech-challenge-group2-pedidos-configmap
   namespace: 'tech-challenge-group2-pedidos'
 data:
-  DB_HOST: $(db_host)
+  DB_HOST: tech-challenge-group2-pedidos-db-svc
+  DB_DATABASE: tech-challenge
