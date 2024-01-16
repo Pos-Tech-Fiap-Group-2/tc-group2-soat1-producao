@@ -1,8 +1,12 @@
 package com.techchallenge.producao.adapter.driver.model.input;
 
+import jakarta.validation.constraints.NotEmpty;
+
 public class PedidoInput {
 
+	@NotEmpty
 	private String pedidoId;
+	@NotEmpty
 	private String status;
 
 	public String getPedidoId() {
