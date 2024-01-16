@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tech-challenge-group2-pedidos-soat1-svc-lb
+  namespace: 'tech-challenge-group2-pedidos'
+spec:
+  selector:
+    app: tech-challenge-group2-pedidos-soat1
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer

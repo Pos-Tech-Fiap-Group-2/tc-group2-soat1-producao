@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tech-challenge-group2-pedidos-deployment
+spec:
+  template:
+    metadata:
+      name: tech-challenge-group2-pedidos
+      namespace: 'tech-challenge-group2-pedidos'
+      labels:
+        app: tech-challenge-group2-pedidos
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: tech-challenge-group2-pedidos-container
+          image: furin27/tech-challenge-group2-pedidos:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: tech-challenge-group2-pedidos-secret
+                  key: db_user
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: tech-challenge-group2-pedidos-secret
+                  key: db_password
+            - name: DB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: tech-challenge-group2-pedidos-secret
+                  key: db_root_password
+          envFrom:
+            - configMapRef:
+                name: tech-challenge-group2-pedidos-configmap
+          resources:
+            requests:
+              cpu: 10m
+          livenessProbe:
+            httpGet:
+              path: /api/actuator/health
+              port: 8080
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          readinessProbe:
+              httpGet:
+                path: /api/actuator/health
+                port: 8080
+              failureThreshold: 3
+              initialDelaySeconds: 30
+              periodSeconds: 10
+              successThreshold: 1
+              timeoutSeconds: 1
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tech-challenge-group2-pedidos
+
