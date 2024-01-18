@@ -17,6 +17,19 @@
 		<java.version>11</java.version>
 		<spring-fox.version>2.9.2</spring-fox.version>
 		<dockerfile-maven-version>1.4.13</dockerfile-maven-version>
+		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+    	<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+    	<sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    	<sonar.language>java</sonar.language>
+	    <sonar.exclusions>
+			**/entities/*,
+			**/exception/*,
+			**/entities/*,
+			**/model/*,
+			**/input/*,
+			**/TechChallengeProducaoApplication.java,
+			**/ValidacaoException.java
+	    </sonar.exclusions>
 	</properties>
 
 	<dependencies>
