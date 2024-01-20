@@ -7,7 +7,6 @@ spec:
   type: NodePort
   ports:
     - port: 8080
-      #targetPort: 80
-      nodePort: 30000 # 30000 - 32767
+      nodePort: 30000
   selector:
     app: tech-challenge-group2-pedidos

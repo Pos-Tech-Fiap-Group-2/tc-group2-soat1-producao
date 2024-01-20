@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: tech-challenge-group2-pedidos-db-svc
+  name: tech-challenge-group2-pedidos-db-svc-np
   namespace: 'tech-challenge-group2-pedidos'
 spec:
   selector:
@@ -10,4 +10,4 @@ spec:
     - protocol: TCP
       port: 27017
       targetPort: 27017
-  clusterIP: None
+  type: NodePort

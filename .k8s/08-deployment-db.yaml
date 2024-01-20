@@ -2,14 +2,15 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: tech-challenge-group2-pedidos-db-deployment
+  namespace: 'tech-challenge-group2-pedidos'
 spec:
   strategy:
     type: Recreate
   template:
     metadata:
-      name: tech-challenge-group2-pedidos-db
+      name: tech-challenge-group2-pedidos-db-deployment
       labels:
-        app: tech-challenge-group2-pedidos-db
+        app: tech-challenge-group2-pedidos-db-deployment
     spec:
       containers:
         - name: tech-challenge-group2-pedidos-db-container
@@ -40,4 +41,4 @@ spec:
             claimName: tech-challenge-group2-pedidos-db-pvc
   selector:
     matchLabels:
-      app: tech-challenge-group2-pedidos-db
+      app: tech-challenge-group2-pedidos-db-deployment
