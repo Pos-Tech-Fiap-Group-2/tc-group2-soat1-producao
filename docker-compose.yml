@@ -37,9 +37,48 @@ services:
     networks:
       - tech-challenge-network
 
+#  sonarqube:
+#    image: sonarqube:community
+#    hostname: sonarqube
+#    container_name: sonarqube
+#    environment:
+#      SONAR_JDBC_URL: "jdbc:postgresql://sonarqube-db:5432/sonar"
+#      SONAR_JDBC_USERNAME: sonar
+#      SONAR_JDBC_PASSWORD: sonar
+#    volumes:
+#      - sonarqube_data:/opt/sonarqube/data
+#      - sonarqube_extensions:/opt/sonarqube/extensions
+#      - sonarqube_logs:/opt/sonarqube/logs
+#    ports:
+#      - "9000:9000"
+#    networks:
+#      - tech-challenge-network
+#    depends_on:
+#      - sonarqube-db
+#
+#  sonarqube-db:
+#    image: postgres:13
+#    hostname: postgresql
+#    container_name: sonarqube-db
+#    environment:
+#      POSTGRES_USER: sonar
+#      POSTGRES_PASSWORD: sonar
+#      POSTGRES_DB: sonar
+#    volumes:
+#      - postgresql:/var/lib/postgresql
+#      - postgresql_data:/var/lib/postgresql/data
+#    networks:
+#      - tech-challenge-network
+
 volumes:
   mongodb-data:
+#  sonarqube_data:
+#  sonarqube_extensions:
+#  sonarqube_logs:
+#  postgresql:
+#  postgresql_data:
 
 networks:
   tech-challenge-network:
-    driver: bridge
+    external:
+      name: tech-challenge-network
