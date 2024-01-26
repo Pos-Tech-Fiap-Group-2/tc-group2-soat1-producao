@@ -2,6 +2,10 @@ package com.techchallenge.producao.bdd;
 
 import static io.restassured.RestAssured.given;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -16,8 +20,21 @@ public class ProducaoBDDPassos {
 
 	private Response response;
 
-	private String ENDPOINT_PRODUCAO = "http://localhost:8080/api/producao";
+	private static String ENDPOINT_PRODUCAO;
 	
+	static {
+		Properties prop = new Properties();
+		InputStream is = ProducaoBDDPassos.class.getResourceAsStream("/bdd-config.properties");
+		
+		try {
+			prop.load(is);
+			ENDPOINT_PRODUCAO = prop.getProperty("bdd.endpoint.url");
+			
+		} catch (IOException e) {
+			
+		}
+	}
+
 	private Response adicionarPedido(String id) {
 		return given().contentType(MediaType.APPLICATION_JSON_VALUE).pathParam("id", id).when()
 				.post(ENDPOINT_PRODUCAO + "/{id}/adicionar");
