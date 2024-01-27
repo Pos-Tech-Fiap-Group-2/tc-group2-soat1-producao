@@ -57,7 +57,7 @@ jobs:
       run: mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
 
   build:
-    needs: [tests]
+    needs: [sonar-cloud]
     runs-on: ubuntu-latest
 
     steps:
