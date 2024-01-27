@@ -2,7 +2,7 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ "feature/actions-ci", "features/actions-sonarcloud" ]
+    branches: [ "feature/actions-ci", "feature/actions-sonarcloud" ]
   pull_request:
     branches: [ "main" ]
 env:
@@ -30,6 +30,31 @@ jobs:
           ${{ runner.os }}-ms
     - name: Build and Test Project
       run: mvn -B package --file pom.xml
+      
+  sonar-cloud:
+    needs: [tests]
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+        
+    - name: Cache the Maven
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-ms
+    - name: Run Sonar Cloud to quality gate
+      env:
+        SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
+      run: mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
 
   build:
     needs: [tests]
