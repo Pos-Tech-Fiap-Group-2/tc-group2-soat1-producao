@@ -2,7 +2,7 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ "feature/actions-ci", "feature/actions-sonarcloud" ]
+    branches: [ "feature/actions-ci", "feature/actions-sonarcloud", "main" ]
   pull_request:
     branches: [ "main" ]
 env:
