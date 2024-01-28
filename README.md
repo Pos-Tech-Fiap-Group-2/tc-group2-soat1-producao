@@ -16,8 +16,8 @@ Para solucionar o problema, a lanchonete irá investir em um sistema de autoaten
 # Compilação e geração de artefato
 Antes de iniciar, certifique-se de que sua máquina atenda aos seguintes requisitos:<br/><br/>
 
-**JDK 11 instalado:**<br/>
-Certifique-se de ter o JDK 11 instalado em sua máquina.<br/><br/>
+**JDK 17 instalado:**<br/>
+Certifique-se de ter o JDK 17 instalado em sua máquina.<br/><br/>
 
 **Maven >= 3 instalado:**<br/>
 Verifique se você tem o Maven instalado em sua máquina. Para verificar a versão do Maven instalada, execute o seguinte comando no terminal: **mvn -version**. Se o Maven não estiver instalado ou estiver em uma versão inferior à 3, faça o download e siga as instruções de instalação do site oficial do Maven ou de outra fonte confiável.<br/><br/>
