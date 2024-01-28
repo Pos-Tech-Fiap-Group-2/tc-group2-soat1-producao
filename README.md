@@ -1,7 +1,5 @@
-
-
 # Documentação - Tech Challenge - Grupo 2 SOAT1 - PosTech - Arquitetura de Software - FIAP
-Repositório para o desafio do Tech Challenge da Pós-gradução em Software Architecture pela FIAP.
+Repositório para o microsserviço de produção do desafio do Tech Challenge da Pós-gradução em Software Architecture pela FIAP.
 
 ## Introdução
 Uma lanchonete de bairro que está expandido sua operação devido seu grande sucesso. Porém, com a expansão e sem um sistema de controle de pedidos, o atendimento aos clientes pode ser caótico e confuso.
@@ -14,11 +12,12 @@ Para solucionar o problema, a lanchonete irá investir em um sistema de autoaten
 - [Vinicius Furin](https://github.com/VFurin)
 - [Vitor Walcker](https://github.com/VitorWalcker)
 
+
 # Compilação e geração de artefato
 Antes de iniciar, certifique-se de que sua máquina atenda aos seguintes requisitos:<br/><br/>
 
-**JDK 17 instalado:**<br/>
-Certifique-se de ter o JDK 17 instalado em sua máquina.<br/><br/>
+**JDK 11 instalado:**<br/>
+Certifique-se de ter o JDK 11 instalado em sua máquina.<br/><br/>
 
 **Maven >= 3 instalado:**<br/>
 Verifique se você tem o Maven instalado em sua máquina. Para verificar a versão do Maven instalada, execute o seguinte comando no terminal: **mvn -version**. Se o Maven não estiver instalado ou estiver em uma versão inferior à 3, faça o download e siga as instruções de instalação do site oficial do Maven ou de outra fonte confiável.<br/><br/>
@@ -33,7 +32,7 @@ Navegue até o diretório raiz do projeto no terminal e execute o seguinte coman
 mvn clean install
 ```
 
-Isso irá baixar as dependências do projeto, compilar o código-fonte e criar o artefato no diretório target com o nome **tech-challenge-group2-soat1-pedido.jar**.<br/>
+Isso irá baixar as dependências do projeto, compilar o código-fonte e criar o artefato no diretório target com o nome **tc-group2-soat1-producao.jar**.<br/>
 Esse artefato será copiado para a imagem do container em momento de build durante a execução do docker-compose.
 
 **Executando o projeto:**<br/>
@@ -42,65 +41,51 @@ Após a conclusão da etapa anterior, você pode executar o projeto seguindo as 
 # Build da imagem do projeto
 Caso seja necessária a geração de uma nova imagem, executar o comando no diretório raíz do projeto:
 ```sh
-docker build --build-arg "JAR_FILE=tech-challenge-group2-soat1-pedido.jar" -t <usuario>/<imagem_nome>:<tag> .
+docker build --build-arg "JAR_FILE=tech-challenge-group2-soat1-producao.jar" -t <usuario>/<imagem_nome>:<tag> .
 ```
 
-Após geração da imagem, alterar o arquivo **09-deployment.yaml** indicando o novo tagueamento da imagem.
+## Documentação Swagger da API
+A documentação em padrão Swagger está disponível em http://localhost:8080/api/swagger-ui.html.
 
-**Importante!**
-- Esse comando é necessário ser executado apenas no primeiro provisionamento dos recursos.
-- Após a primeira inicialização, os volumes relacionados aos dados do MongoDB estarão persistidos.
+## Execução do projeto via Postman
+Basta clicar no link [diretório postman](src/main/resources/postman) onde está disponível o arquivo JSON contendo todos os endpoints configurados basta importá-lo via Postman e executar o passo-a-passo abaixo.
 
-# Recursos provisionados no k8s
-Lista de arquivos YAML com recursos do k8s:
-- **00-secrets.yaml:** Armazenamento das secrets de banco de dados e access_token para a API do MP;
-- **01-persistent-volume-db.yaml:** Mapeamento da PV para os arquivos de banco de dados;
-- **02-persistent-volume-claim.yaml:** Mapeamento da PVC com configuração de claims para volumes do banco de dados;
-- **03-configmap.yaml:** ConfigMap com chaves relacionadas a integração do microserviço;
-- **04-configmap-db.yaml:** ConfigMap com chaves relacionadas a integração do banco de dados;
-- **05-service-db.yaml:** Mapeamento das portas para acesso ao service de banco de dados;
-- **06-service-lb.yaml:** Mapeamento das portas para acesso ao service LoadBalancer do microserviço;
-- **07-service-np.yaml:** Mapeamento das portar para acesso ao service NodePort do microserviço;
-- **08-deployment-db.yaml:** Deployment para disponibilização do banco de dados;
-- **09-deployment.yaml:** Deployment para disponibilização do microserviço;
-- **10-autoscale.yaml:** HPA com parametrização de quantidade de réplicas e indicador para escalabilidade.
-
-**Importante!**
-Os arquivos devem ser aplicados ao k8s na ordem que estão mapeados.
-
-Após provisionamento dos recursos, a aplicação estará disponível no endereço associado a NAT configurada no ambiente provido do k8s. O contexto da aplicação está definida como **/api**.
-
-Após o provisionamento dos recursos, será necessário realizar uma carga de dados iniciais na base, executando o seguinte comando:
-
-```sh
-kubectl exec -i tech-challenge-group2-db-deployment-<hash> -- mysql -u root -proot  < .docker/seeds/load-data.sql
-```
-**Observação:** Substituir *&lt;hash&gt;* pelo hash associado ao pod provisionado pelo deployment.
+<a name="ancora"></a>
+1. [Adicionar Pedido à Fila de Produção](#ancora1)
+2. [Atualizar Status de Pedido em Produção](#ancora2)
+3. [Consultar a Fila de Pedidos](#ancora3)
+4. [Consultar Status de Pedido em Produção](#ancora4)
+5. [Consultar Histórico de Produção de um Pedido](#ancora5)
 
 # Endpoints disponíveis por recurso
 Abaixo, segue a lista de endpoints disponíveis por recurso e exemplos de requisição.
 
+<a id="ancora1"></a>
 ##### Adicionar Pedido à Fila de Produção
 ```sh
-curl -X POST http://localhost:8080/api/producao/{id}/adicionar
+POST http://localhost:8080/api/producao/{id}/adicionar
 ```
-
+<a id="ancora2"></a>
 ##### Atualizar Status de Pedido em Produção
 ```sh
-curl -X PUT http://localhost:8080/api/producao/{id}/status -H "Content-Type: application/json" -d '{"status": "Em Preparação"}'
+PUT http://localhost:8080/api/producao/{id}/status -H "Content-Type: application/json" -d 
+Request body
+{
+  "status": "Em Preparação"
+}
 ```
-
+<a id="ancora3"></a>
 ##### Consultar a Fila de Pedidos
 ```sh
-curl -X GET http://localhost:8080/api/producao/fila
+GET http://localhost:8080/api/producao/fila
 ```
-
+<a id="ancora4"></a>
 ##### Consultar Status de Pedido em Produção
 ```sh
-curl -X GET http://localhost:8080/api/producao/{id}/status
+GET http://localhost:8080/api/producao/{id}/status
 ```
-
+<a id="ancora5"></a>
 ##### Consultar Histórico de Produção de um Pedido
 ```sh
-curl -X GET http://localhost:8080/api/producao/{id}/historico
+GET http://localhost:8080/api/producao/{id}/historico
 ```
