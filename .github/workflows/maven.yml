@@ -105,7 +105,7 @@ jobs:
      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
      with:
        task-definition: ${{ steps.read-task-definition.outputs.task-definition }}
-       service: my-service
+       service: tc-producao-sv
        cluster: tech-challenge-cluster
        wait-for-service-stability: true
   
