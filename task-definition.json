@@ -1,8 +1,8 @@
 {
-  "taskDefinitionArn": "arn:aws:ecs:us-east-1:818048014896:task-definition/tech-challenge-producao-task:1",
+  "taskDefinitionArn": "arn:aws:ecs:us-east-1:818048014896:task-definition/tech-challenge-producao-task:2",
   "containerDefinitions": [
     {
-      "name": "tc-api-producao",
+      "name": "tech-challenge-api-producao",
       "image": "818048014896.dkr.ecr.us-east-1.amazonaws.com/tech-challenge-ecr:tc-api-producao",
       "cpu": 0,
       "portMappings": [
