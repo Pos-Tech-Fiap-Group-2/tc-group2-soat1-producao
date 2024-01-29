@@ -1,13 +1,13 @@
 {
-  "taskDefinitionArn": "arn:aws:ecs:us-east-1:818048014896:task-definition/tech-challenge-task:1",
+  "taskDefinitionArn": "arn:aws:ecs:us-east-1:818048014896:task-definition/tech-challenge-producao-task:1",
   "containerDefinitions": [
     {
-      "name": "tech-challenge-api-producao",
+      "name": "tc-api-producao",
       "image": "818048014896.dkr.ecr.us-east-1.amazonaws.com/tech-challenge-ecr:tc-api-producao",
       "cpu": 0,
       "portMappings": [
         {
-          "name": "tc-producao",
+          "name": "8080",
           "containerPort": 8080,
           "hostPort": 8080,
           "protocol": "tcp",
@@ -15,7 +15,24 @@
         }
       ],
       "essential": true,
-      "environment": [],
+      "environment": [
+        {
+          "name": "DB_HOST",
+          "value": "54.227.96.8"
+        },
+        {
+          "name": "DB_DATABASE",
+          "value": "tech-challenge"
+        },
+        {
+          "name": "DB_USER",
+          "value": "admin"
+        },
+        {
+          "name": "DB_PASSWORD",
+          "value": "admin"
+        }
+      ],
       "environmentFiles": [],
       "mountPoints": [],
       "volumesFrom": [],
@@ -24,7 +41,7 @@
         "logDriver": "awslogs",
         "options": {
           "awslogs-create-group": "true",
-          "awslogs-group": "/ecs/tech-challenge-task",
+          "awslogs-group": "/ecs/tech-challenge-producao-task",
           "awslogs-region": "us-east-1",
           "awslogs-stream-prefix": "ecs"
         },
@@ -32,7 +49,7 @@
       }
     }
   ],
-  "family": "tech-challenge-task",
+  "family": "tech-challenge-producao-task",
   "taskRoleArn": "arn:aws:iam::818048014896:role/LabRole",
   "executionRoleArn": "arn:aws:iam::818048014896:role/LabRole",
   "networkMode": "awsvpc",
@@ -74,6 +91,7 @@
     "FARGATE"
   ],
   "requiresCompatibilities": [
+    "EC2",
     "FARGATE"
   ],
   "cpu": "1024",
@@ -82,7 +100,12 @@
     "cpuArchitecture": "X86_64",
     "operatingSystemFamily": "LINUX"
   },
-  "registeredAt": "2024-01-27T05:21:49.301Z",
+  "registeredAt": "2024-01-29T22:11:09.019Z",
   "registeredBy": "arn:aws:sts::818048014896:assumed-role/voclabs/user3013614=vinicius.furin@outlook.com",
-  "tags": []
+  "tags": [
+    {
+      "key": "name",
+      "value": "tech-challenge-producao-task"
+    }
+  ]
 }
