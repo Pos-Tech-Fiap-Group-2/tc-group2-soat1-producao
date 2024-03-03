@@ -26,7 +26,7 @@ import jakarta.validation.Valid;
 
 @Api(tags = "Produção")
 @RestController
-@RequestMapping(value = "/producao", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/producao", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 public class ProducaoRestController {
 	
     @Autowired
