@@ -139,7 +139,7 @@ public class ProducaoRestControllerTest {
 	@Test
 	public void dadoIdDoPedido_quandoAdicionarAFila_entaoStatus200() throws Exception {
 
-		mockMvc.perform(post("/producao/1/adicionar").contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(post("/api/producao/1/adicionar").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isCreated());
 	}
 	
@@ -149,7 +149,7 @@ public class ProducaoRestControllerTest {
 		String content = ResourceUtil.getContentFromResource(
 				"/json/correto/pedido-input.json");
 
-		mockMvc.perform(put("/producao/1/status").contentType(MediaType.APPLICATION_JSON).content(content))
+		mockMvc.perform(put("/api/producao/1/status").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isOk());
 	}
 	
@@ -158,7 +158,7 @@ public class ProducaoRestControllerTest {
 
 		when(controller.consultarFilaDePedidos()).thenReturn(createPedidoModels(createPedidos()));
 		
-		MvcResult result = mockMvc.perform(get("/producao/fila")
+		MvcResult result = mockMvc.perform(get("/api/producao/fila")
 	      .contentType(MediaType.APPLICATION_JSON))
 	      .andExpect(status().isOk())
 	      .andReturn();
@@ -176,7 +176,7 @@ public class ProducaoRestControllerTest {
 		
 		when(controller.consultarStatusDePedidoEmProducao("1")).thenReturn(model);
 		
-		mockMvc.perform(get("/producao/1/status")
+		mockMvc.perform(get("/api/producao/1/status")
 	      .contentType(MediaType.APPLICATION_JSON))
 	      .andExpect(status().isOk())
 	      .andExpect(jsonPath("$.pedidoId").value(model.getPedidoId()))
@@ -191,7 +191,7 @@ public class ProducaoRestControllerTest {
 
 		when(controller.consultarHistoricoDeProducaoDePedido("1")).thenReturn(createPedidoModels(createPedidos()));
 		
-		MvcResult result = mockMvc.perform(get("/producao/1/historico")
+		MvcResult result = mockMvc.perform(get("/api/producao/1/historico")
 	      .contentType(MediaType.APPLICATION_JSON))
 	      .andExpect(status().isOk())
 	      .andReturn();
@@ -208,21 +208,21 @@ public class ProducaoRestControllerTest {
 		String content = ResourceUtil.getContentFromResource(
 				"/json/incorreto/pedido-input-sem-pedidoId.json");
 
-		mockMvc.perform(put("/producao/1/status").contentType(MediaType.APPLICATION_JSON).content(content))
+		mockMvc.perform(put("/api/producao/1/status").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().is4xxClientError());
 	}
 	
 	@Test
 	public void dadoStatus_quandoConsultarComPayloadIncorreto_entaoStatus400() throws Exception {
 		
-		mockMvc.perform(put("/producao/1/status").contentType(MediaType.APPLICATION_JSON).content("{\"pedidoId\": \"1\"\"status\" : \"RECEBIDO\"}"))
+		mockMvc.perform(put("/api/producao/1/status").contentType(MediaType.APPLICATION_JSON).content("{\"pedidoId\": \"1\"\"status\" : \"RECEBIDO\"}"))
 				.andExpect(status().is4xxClientError());
 	}
 	
 	@Test
 	public void dadoStatus_quandoConsultarComMediaTypeIncorreto_entaoStatus400() throws Exception {
 		
-		mockMvc.perform(put("/producao/1/status").contentType(MediaType.APPLICATION_XML).content(""))
+		mockMvc.perform(put("/api/producao/1/status").contentType(MediaType.APPLICATION_XML).content(""))
 				.andExpect(status().is4xxClientError());
 	}
 	
@@ -232,7 +232,7 @@ public class ProducaoRestControllerTest {
 		when(controller.consultarStatusDePedidoEmProducao("1"))
 			.thenThrow(new RuntimeException("Erro inesperado"));
 	
-		mockMvc.perform(get("/producao/1/status")
+		mockMvc.perform(get("/api/producao/1/status")
 	      .contentType(MediaType.APPLICATION_JSON))
 	      .andExpect(status().is5xxServerError());
 	}
