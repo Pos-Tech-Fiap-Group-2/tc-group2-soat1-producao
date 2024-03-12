@@ -1,15 +1,21 @@
 package com.techchallenge.producao.adapter.gateways.impl;
 
-import com.techchallenge.producao.adapter.mapper.business.ProducaoBusinessMapper;
-import com.techchallenge.producao.core.domain.entities.Pedido;
+import java.time.OffsetDateTime;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.techchallenge.producao.adapter.driver.messaging.producer.cliente.NotificacaoClienteProducer;
+import com.techchallenge.producao.adapter.dto.PedidoDTO;
+import com.techchallenge.producao.adapter.external.pedido.PedidoAPI;
 import com.techchallenge.producao.adapter.gateways.ProducaoGateway;
+import com.techchallenge.producao.adapter.mapper.business.ProducaoBusinessMapper;
+import com.techchallenge.producao.core.domain.entities.Pedido;
+import com.techchallenge.producao.core.domain.entities.messaging.Mensagem;
+import com.techchallenge.producao.core.domain.entities.messaging.StatusPedido;
 import com.techchallenge.producao.drivers.db.entities.PedidoEntity;
 import com.techchallenge.producao.drivers.db.repositories.ProducaoRepository;
-
-import java.util.List;
 
 @Component
 public class ProducaoGatewayImpl implements ProducaoGateway {
@@ -20,12 +26,18 @@ public class ProducaoGatewayImpl implements ProducaoGateway {
 	@Autowired
 	private ProducaoBusinessMapper mapper;
 	
+	@Autowired
+	private NotificacaoClienteProducer clienteProducer;
+	
+	@Autowired
+	private PedidoAPI pedidoAPI;
+	
 	@Override
 	public void adicionarPedidoAFilaDeProducao(String id) {
 		PedidoEntity entity = new PedidoEntity();
 
 		entity.setPedidoId(id);
-		entity.setStatus("RECEBIDO");
+		entity.setStatus(StatusPedido.RECEBIDO.name());
 
 		pedidosRepository.save(entity);
 	}
@@ -39,11 +51,23 @@ public class ProducaoGatewayImpl implements ProducaoGateway {
 			throw new RuntimeException("Pedido não encontrado");
 		}
 
+		StatusPedido status = StatusPedido.getStatusPedidoByName(pedido.getStatus());
+		
+		if (status == null) {
+			throw new RuntimeException("Status não suportado");
+		}
+		
 		entity = new PedidoEntity();
 		entity.setPedidoId(pedido.getPedidoId());
-		entity.setStatus(pedido.getStatus());
+		entity.setStatus(status.name());
 
 		pedidosRepository.save(entity);
+		
+		PedidoDTO pedidoDto = pedidoAPI.buscarDadosPedido(Long.valueOf(pedido.getPedidoId()));
+		// Atualiza para o status atual do pedido.
+		pedidoDto.setStatus(status);
+		
+		this.enviarNotificacaoCliente(pedidoDto);
 	}
 
 	@Override
@@ -62,5 +86,23 @@ public class ProducaoGatewayImpl implements ProducaoGateway {
 	public List<Pedido> consultarHistoricoDeProducaoDePedido(String id) {
 		List<PedidoEntity> pedidos = pedidosRepository.findAllByPedidoIdOrderByDataCriacao(id);
 		return mapper.toCollectionModel(pedidos);
+	}
+	
+	private void enviarNotificacaoCliente(PedidoDTO pedido) {
+		
+		Mensagem mensagem = new Mensagem();
+		mensagem.setCliente(new com.techchallenge.producao.core.domain.entities.messaging.Cliente());
+		mensagem.getCliente().setEmail(pedido.getCliente().getEmail());
+		mensagem.getCliente().setNome(pedido.getCliente().getNome());
+		mensagem.getCliente().setPedido(new com.techchallenge.producao.core.domain.entities.messaging.Pedido());
+		mensagem.getCliente().getPedido().setDataSolicitacao(pedido.getDataSolicitacao());
+		mensagem.getCliente().getPedido().setId(pedido.getId());
+		mensagem.getCliente().getPedido().setStatus(pedido.getStatus());
+		mensagem.getCliente().getPedido().setValor(pedido.getValor());
+		mensagem.setTemplate(pedido.getStatus().getStatus());
+		mensagem.setTimestamp(OffsetDateTime.now());
+		
+		System.out.println("Enviando mensagem: " + mensagem);
+		clienteProducer.enviar(mensagem);
 	}
 }
