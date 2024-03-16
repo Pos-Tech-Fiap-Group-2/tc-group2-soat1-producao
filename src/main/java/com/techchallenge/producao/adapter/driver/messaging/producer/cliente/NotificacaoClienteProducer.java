@@ -11,7 +11,7 @@ import com.techchallenge.producao.core.domain.entities.messaging.Mensagem;
 @Component
 public class NotificacaoClienteProducer extends NotificacaoBaseProducer<Mensagem> {
 
-	@Value("${cloud.aws.queue.name.notificacao-cliente}")
+	@Value("${queue.name.notificacao-cliente}")
 	private String queueName;
 	
 	@Autowired
