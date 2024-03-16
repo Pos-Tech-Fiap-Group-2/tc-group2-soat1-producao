@@ -4,9 +4,13 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -20,9 +24,14 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.techchallenge.producao.adapter.gateways.ProducaoGateway;
+import com.techchallenge.producao.adapter.driver.messaging.producer.cliente.NotificacaoClienteProducer;
+import com.techchallenge.producao.adapter.dto.ClienteDTO;
+import com.techchallenge.producao.adapter.dto.PedidoDTO;
+import com.techchallenge.producao.adapter.external.pedido.PedidoAPI;
 import com.techchallenge.producao.adapter.mapper.business.ProducaoBusinessMapper;
 import com.techchallenge.producao.core.domain.entities.Pedido;
+import com.techchallenge.producao.core.domain.entities.messaging.Mensagem;
+import com.techchallenge.producao.core.domain.entities.messaging.StatusPedido;
 import com.techchallenge.producao.drivers.db.entities.PedidoEntity;
 import com.techchallenge.producao.drivers.db.repositories.ProducaoRepository;
 
@@ -37,6 +46,12 @@ public class ProducaoGatewayImplTest {
 
 	@Mock
 	ProducaoBusinessMapper mapper;
+	
+	@Mock
+	PedidoAPI pedidoApi;
+	
+	@Mock
+	NotificacaoClienteProducer clienteProducer;
 	
     @BeforeEach
     private void setup() {
@@ -74,9 +89,9 @@ public class ProducaoGatewayImplTest {
 	@SuppressWarnings("serial")
 	private List<PedidoEntity> createPedidoEntities() {
 		List<PedidoEntity> entities = new ArrayList<>() {{
-			this.add(createPedidoEntity("1", "RECEBIDO", Date.from(Instant.now())));
-			this.add(createPedidoEntity("2", "RECEBIDO", Date.from(Instant.now().plusSeconds(1L))));
-			this.add(createPedidoEntity("3", "RECEBIDO", Date.from(Instant.now().plusSeconds(1L))));
+			this.add(createPedidoEntity("1", StatusPedido.RECEBIDO.name(), Date.from(Instant.now())));
+			this.add(createPedidoEntity("2", StatusPedido.RECEBIDO.name(), Date.from(Instant.now().plusSeconds(1L))));
+			this.add(createPedidoEntity("3", StatusPedido.RECEBIDO.name(), Date.from(Instant.now().plusSeconds(1L))));
 		}};
 
 		return entities;
@@ -85,9 +100,9 @@ public class ProducaoGatewayImplTest {
 	@SuppressWarnings("serial")
 	private List<Pedido> createPedidos() {
 		List<Pedido> pedidos = new ArrayList<>() {{
-			this.add(createPedido("1", "RECEBIDO", Date.from(Instant.now())));
-			this.add(createPedido("2", "RECEBIDO", Date.from(Instant.now().plusSeconds(1L))));
-			this.add(createPedido("3", "RECEBIDO", Date.from(Instant.now().plusSeconds(1L))));
+			this.add(createPedido("1", StatusPedido.RECEBIDO.name(), Date.from(Instant.now())));
+			this.add(createPedido("2", StatusPedido.RECEBIDO.name(), Date.from(Instant.now().plusSeconds(1L))));
+			this.add(createPedido("3", StatusPedido.RECEBIDO.name(), Date.from(Instant.now().plusSeconds(1L))));
 		}};
 
 		return pedidos;
@@ -96,7 +111,7 @@ public class ProducaoGatewayImplTest {
 	
 	@Test
 	public void adicionarPedidoAFilaDeProducao() {
-		PedidoEntity pedidoEntity = createPedidoEntity("1", "RECEBIDO");
+		PedidoEntity pedidoEntity = createPedidoEntity("1", StatusPedido.RECEBIDO.name());
 		
 		when(repository.save(pedidoEntity)).thenReturn(pedidoEntity);
 		assertDoesNotThrow(() -> gateway.adicionarPedidoAFilaDeProducao("1"));
@@ -104,18 +119,31 @@ public class ProducaoGatewayImplTest {
 	
 	@Test
 	public void atualizarStatusDePedidoEmProducao() {
-		PedidoEntity pedidoEntity = createPedidoEntity("1", "EM_PREPARACAO");
-		Pedido pedido = createPedido("1", "EM_PREPARACAO");
+		PedidoEntity pedidoEntity = createPedidoEntity("1", StatusPedido.PREPARACAO.name());
+		Pedido pedido = createPedido("1", StatusPedido.PREPARACAO.name());
+		PedidoDTO dto = new PedidoDTO();
+		
+		dto.setId(Long.valueOf(pedido.getPedidoId()));
+		dto.setValor(new BigDecimal("25.99"));
+		dto.setStatus(StatusPedido.PREPARACAO);
+		dto.setDataSolicitacao(OffsetDateTime.now());
+		dto.setCliente(new ClienteDTO());
+		dto.getCliente().setEmail("email@teste.com.br");
+		dto.getCliente().setId(1L);
+		dto.getCliente().setNome("Teste");
+		
 		
 		when(repository.findByPedidoId(pedido.getPedidoId())).thenReturn(pedidoEntity);
 		when(repository.save(pedidoEntity)).thenReturn(pedidoEntity);
+		when(pedidoApi.buscarDadosPedido(1L)).thenReturn(dto);
+		doNothing().when(clienteProducer).enviar(any(Mensagem.class));
 		
 		assertDoesNotThrow(() -> gateway.atualizarStatusDePedidoEmProducao(pedido));
 	}
 	
 	@Test
 	public void atualizarStatusDePedidoEmProducao_null() {
-		Pedido pedido = createPedido("1", "EM_PREPARACAO");
+		Pedido pedido = createPedido("1", StatusPedido.PREPARACAO.name());
 		
 		when(repository.findByPedidoId(pedido.getPedidoId())).thenReturn(null);
 		assertThrows(RuntimeException.class, () -> gateway.atualizarStatusDePedidoEmProducao(pedido));
@@ -141,12 +169,12 @@ public class ProducaoGatewayImplTest {
 		
 		PedidoEntity pedidoEntity = new PedidoEntity();
 		pedidoEntity.setPedidoId("1");
-		pedidoEntity.setStatus("RECEBIDO");
+		pedidoEntity.setStatus(StatusPedido.RECEBIDO.name());
 		pedidoEntity.setDataCriacao(current);
 		
 		Pedido pedido = new Pedido();
 		pedido.setPedidoId("1");
-		pedido.setStatus("RECEBIDO");
+		pedido.setStatus(StatusPedido.RECEBIDO.name());
 		pedido.setDataCriacao(current);
 		
 		when(repository.findByPedidoId("1")).thenReturn(pedidoEntity);
@@ -162,17 +190,17 @@ public class ProducaoGatewayImplTest {
 		PedidoEntity entity1 = new PedidoEntity();
 		entity1.setDataCriacao(Date.from(Instant.now()));
 		entity1.setPedidoId("1");
-		entity1.setStatus("RECEBIDO");
+		entity1.setStatus(StatusPedido.RECEBIDO.name());
 		
 		PedidoEntity entity2 = new PedidoEntity();
 		entity2.setDataCriacao(Date.from(Instant.now().plusSeconds(1L)));
 		entity2.setPedidoId("1");
-		entity2.setStatus("RECEBIDO");
+		entity2.setStatus(StatusPedido.RECEBIDO.name());
 		
 		PedidoEntity entity3 = new PedidoEntity();
 		entity3.setDataCriacao(Date.from(Instant.now().plusSeconds(1L)));
 		entity3.setPedidoId("1");
-		entity3.setStatus("RECEBIDO");
+		entity3.setStatus(StatusPedido.RECEBIDO.name());
 		
 		entities.add(entity1);
 		entities.add(entity2);
