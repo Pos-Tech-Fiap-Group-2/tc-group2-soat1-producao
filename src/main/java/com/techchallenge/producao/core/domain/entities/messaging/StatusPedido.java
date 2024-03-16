@@ -7,7 +7,7 @@ public enum StatusPedido {
 
 	RECEBIDO("received"),
 	CANCELADO("canceled"),
-	EM_PREPARACAO("preparing"),
+	PREPARACAO("preparing"),
 	PRONTO("done");
 	
 	private StatusPedido(String status) {
