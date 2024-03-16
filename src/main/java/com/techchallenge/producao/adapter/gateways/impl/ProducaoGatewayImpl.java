@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.techchallenge.producao.adapter.driver.messaging.producer.cliente.NotificacaoClienteProducer;
 import com.techchallenge.producao.adapter.dto.PedidoDTO;
 import com.techchallenge.producao.adapter.external.pedido.PedidoAPI;
+import com.techchallenge.producao.adapter.external.pedido.model.StatusPedidoInput;
 import com.techchallenge.producao.adapter.gateways.ProducaoGateway;
 import com.techchallenge.producao.adapter.mapper.business.ProducaoBusinessMapper;
 import com.techchallenge.producao.core.domain.entities.Pedido;
@@ -63,10 +64,17 @@ public class ProducaoGatewayImpl implements ProducaoGateway {
 
 		pedidosRepository.save(entity);
 		
-		PedidoDTO pedidoDto = pedidoAPI.buscarDadosPedido(Long.valueOf(pedido.getPedidoId()));
+		Long pedidoId = Long.valueOf(pedido.getPedidoId());
+		
+		PedidoDTO pedidoDto = pedidoAPI.buscarDadosPedido(pedidoId);
 		// Atualiza para o status atual do pedido.
 		pedidoDto.setStatus(status);
 		
+		StatusPedidoInput atualizacao = new StatusPedidoInput();
+		atualizacao.setStatus(status);
+		
+		
+		this.pedidoAPI.atualizarStatusPedido(pedidoId, atualizacao);
 		this.enviarNotificacaoCliente(pedidoDto);
 	}
 
